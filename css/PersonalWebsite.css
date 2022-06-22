@@ -1,0 +1,93 @@
+body{
+    background-color:rgba(118, 137, 166, 0.4);
+    overflow-x: hidden;
+    overflow-y: scroll;
+    margin: 0px;
+}
+
+h1{
+    display: inline-block;
+    background-image: linear-gradient(180deg, rgba(3, 71, 173, 0.981), rgba(23, 68, 136, 0.493), rgba(3, 71, 173, 0.981));
+    text-align: center;
+    color: rgb(247, 239, 239);
+    font-family: "Courier New", "Courier", monospace;
+    font-size: 8vw;
+    width: 100%;
+    margin: 0px;
+    padding: 1%;
+}
+
+.navigation_list{
+    background-color: rgba(247,239,239,1.0);
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    border: solid 1px rgb(0,0,0);
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.navigation_item{
+    margin-right: 2vw;
+    font-family: Arial, sans-serif;
+    font-size: 5vw;
+}
+
+.navigation_item:first-child{
+    margin-right: auto;
+    margin-left: 1vw;
+}
+
+a:hover{
+    background-color:rgba(225, 250, 2, 0.526);
+    transition: background_color 2s;
+}
+
+#introductory_paragraph{
+    background-color: rgba(13,178,249,0.5);
+    border-radius: 1vw;
+    padding: 1vw;
+    font-family:'Times New Roman', Times, serif;
+    font-size: 4vw;
+    margin-top: 0px;
+}
+
+#home_icon{
+    height: 8vw;
+    width: 8vw;
+    pointer-events: none;
+}
+
+#about_me_container{
+    width: 100%;
+    white-space: nowrap; 
+    border: 1px solid rgb(0,0,0);
+}
+
+#eric_daetz_picture{
+    display: inline-block;
+    height: 48%;
+    width: 33%;
+    max-width: 1798px;
+    max-height: 2641px;
+    margin-right: 2%;
+}
+
+#about_me_paragraph{
+    display: inline-block;
+    vertical-align: top;
+    width: 60%;
+    font-size: 3vw;
+}
+
+footer{
+    text-align: center;
+    display: flex;
+    flex-grow: 1;
+    flex-shrink: 0;
+    background-color: rgba(25, 250, 0, 0.318);
+    font-size: 2vw;
+}
