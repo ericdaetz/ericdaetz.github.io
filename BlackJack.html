@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>BlackJack </title>
+	<link rel="stylesheet" href="css/BlackJack.css">
+</head>
+
+<body>
+    <header>
+        <h1> Eric Daetz's Personal Website </h1>
+    </header>
+
+    <nav>
+        <ul class= "navigation_list">
+            <li class = "navigation_item">
+                <a href="index.html"><object type="image/svg+xml" data="svgs/home_symbol.svg" width="50" height="50" id="home_icon">Home Symbol</object></a>
+            </li>
+            <li class = "navigation_item">
+                <a href="AboutMe.html">About Me</a>
+            </li>
+            <li class = "navigation_item">
+                <a href="BlackJack.html">BlackJack Game</a>
+            </li>
+            <li class = "navigation_item">
+                <a href="pdfs/Eric Daetz General Resume.pdf" target="_blank">Resume</a>
+            </li>
+        </ul>
+    </nav>
+
+    <h2> Welcome to BlackJack! </h2>
+
+    <button id= "game_start_button" onclick="startGame()">
+        Let's Play!
+    </button>
+
+    <p id="player_score">
+        Total Card Value: 
+    </p>
+
+    <button id= "hit_me_button" onclick="dealPlayerCard()" disabled="true" >
+        Hit me!
+    </button>
+
+    <button id= "stand_button" onclick="playerStand()" disabled="true" >
+        Stand
+    </button>
+
+    <canvas id="blackjack_canvas" width="0" height="0">
+    </canvas>
+
+    <p> Cards in Hand: <br> </p>
+
+    <div id ="player_card_list">
+    </div>
+
+    <script type="text/javascript" src="js/BlackJack.js"></script>
+</body>
+
+</html>

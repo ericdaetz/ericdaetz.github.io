@@ -1,0 +1,94 @@
+h1{
+    display: inline-block;
+    background-image: linear-gradient(180deg, rgba(3, 71, 173, 0.981), rgba(23, 68, 136, 0.493), rgba(3, 71, 173, 0.981));
+    text-align: center;
+    color: rgb(247, 239, 239);
+    font-family: "Courier New", "Courier", monospace;
+    font-size: 3vw;
+    width: 100%;
+    margin: 0px;
+    padding: 1%;
+}
+
+.navigation_list{
+    background-color: rgba(247,239,239,1.0);
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-top: 0.2rem;
+    padding-bottom: 0.2rem;
+    border: solid 1px rgb(0,0,0);
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.navigation_item{
+    margin-right: 1vw;
+    font-family: Arial, sans-serif;
+    font-size: 150%;
+}
+
+.navigation_item:first-child{
+    margin-right: auto;
+    margin-left: 1vw;
+}
+
+.navigation_item:first-child a{
+    padding-top: 1.25em;
+}
+
+a:hover{
+    background-color:rgba(225, 250, 2, 0.526);
+    transition: background_color 2s;
+}
+
+#home_icon{
+    margin-top: 1vw;
+    height: 3vw;
+    width: 3vw;
+    pointer-events: none;
+}
+
+h2{
+    background-color: rgb(37, 160, 31);
+    text-align: center;
+    color: #fb3008f7;
+    font-family: "Courier New", "Courier", monospace;
+    font-size: 2vw;
+    width: 100%;
+    margin-top: 0px;
+    margin-right: 0px;
+}
+
+#player_score p{
+    color: #0000ff;
+    display: inline-block;
+}
+
+#player_card_list p{
+    color: #0000ff;
+}
+
+#hit_me_button{
+    display: inline-block;
+    visibility: hidden;
+    background-color: rgb(16, 243, 31);
+    color: rgb(0,0,0);
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 1rem;
+    margin: 0.2em;
+    padding: 0.1em;
+}
+
+#stand_button{
+    display: inline-block;
+    visibility: hidden;
+    background-color: rgb(251, 75, 5);
+    color: rgb(0,0,0);
+    font-weight: bold;
+    font-size: 1rem;
+    margin: 0.2em;
+    padding: 0.1em;
+}
