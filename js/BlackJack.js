@@ -50,7 +50,7 @@ var canvas = document.getElementById("blackjack_canvas");
 var ctx = canvas.getContext("2d");
 var canvas_width = window.innerWidth - Math.round((window.innerWidth/100) * 5);
 var canvas_height = Math.round(canvas_width/2.2);
-var card_width = Math.round(canvas_width/10); //width is 10% of the full canvas width
+var card_width = Math.round(canvas_width/7); //width is 14.3% of the full canvas width
 var card_height = Math.round(card_width * 1.4); //height is 1.4x the card width
 var x_offset = Math.round(card_width/8);
 var y_offset = Math.round(card_height/20);
@@ -62,6 +62,15 @@ var image_map = new Map();
 //global variables related to DOM specifically
 var player_score_text = document.getElementById("player_score"); //a reference to the player score HTML element
 var player_card_list = document.getElementById("player_card_list"); //a reference to the player card list HTML element
+var game_start_button = document.getElementById("game_start_button"); //a reference to the game start button HTML element
+
+//global variables related to color/text color
+var table_color = "rgb(47,147,0)"; //color of the canvas background/game table
+var black_color = "rgb(0,0,0)";
+var red_color = "rgb(255,0,0)";
+var blue_color = "rgb(0,0,255)";
+var yellow_color = "rgb(255,225,0)";
+
 
 function preloadImageMap(event){
     let full_deck = createDeck(); //create a full deck such that image_title properties can be accessed easily
@@ -81,7 +90,7 @@ function preloadImageMap(event){
     card_back_image.src = "imgs/card_back.png";
 }
 
-//Pre-load images into the image_map
+//Pre-load images into the image_map, triggers when the DOM is loaded
 document.addEventListener('DOMContentLoaded', preloadImageMap);
 
 /* Function: drawCanvas()
@@ -95,19 +104,19 @@ function drawCanvas(){
     canvas_height = Math.round(canvas_width/2.2);
     canvas.width = canvas_width;
     canvas.height = canvas_height;
-    card_width = Math.round(canvas_width/10);
+    card_width = Math.round(canvas_width/7);
     card_height = Math.round(card_width * 1.4);
     x_offset = Math.round(card_width/8);
     y_offset = Math.round(card_height/20);
     player_x_offset = Math.round(canvas_width/100);
     dealer_x_offset = Math.round(canvas_width/2);
     hands_y_offset = Math.round(canvas_height/10);
-    ctx.fillStyle = "rgb(47,147,0)"; //green table fillStyle
+    ctx.fillStyle = table_color; //green table fillStyle
     ctx.fillRect(0,0, canvas_width, canvas_height);
 
     //draw Scores
     ctx.font = "16pt serif";
-    ctx.fillStyle = "rgb(0,0,0)"; //Black text fillStyle
+    ctx.fillStyle = black_color; //Black text fillStyle
     ctx.fillText("Player Card Value: " + current_scores.player_score, Math.round(canvas_width/25), Math.round(canvas_height/20));
     if(game_is_over === false){
         if(current_dealer_hand.length > 0){
@@ -151,15 +160,15 @@ function drawCanvas(){
     if(game_is_over === true){
         ctx.font = "30px fantasy"
         if(dealer_won === true){
-            ctx.fillStyle = "rgb(255,0,0)"; //Red text
+            ctx.fillStyle = red_color; //Red text
             ctx.fillText("The Dealer Wins!", Math.round((canvas_width/2) - (canvas_width/20)), Math.round(canvas_height/2));
         }
         else if(player_won === true){
-            ctx.fillStyle = "rgb(0,0,255)"; //Green text
+            ctx.fillStyle = blue_color; //Blue text
             ctx.fillText("You Win!", Math.round((canvas_width/2) - (canvas_width/20)), Math.round(canvas_height/2));
         }
         else if(game_was_tie === true){
-            ctx.fillStyle = "rgb(255,225,0)"; //Yellow text
+            ctx.fillStyle = yellow_color; //Yellow text
             ctx.fillText("It's a tie!", Math.round((canvas_width/2) - (canvas_width/20)), Math.round(canvas_height/2));
         }
     }
@@ -255,8 +264,8 @@ function checkDealerEndCondition(){
 
     //Checks if it's a tie on the first turn
     if(current_scores.player_natural_blackjack === true && (current_scores.player_score === current_scores.dealer_score)){
-        document.getElementById("game_start_button").disabled = false;
-        document.getElementById("game_start_button").style.visibility = "visible";
+        game_start_button.disabled = false;
+        game_start_button.style.visibility = "visible";
         console.log("Player Score: " + current_scores.player_score + " Dealer Score: " + current_scores.dealer_score);
         console.log("It's a tie");
         game_is_over = true;
@@ -266,8 +275,8 @@ function checkDealerEndCondition(){
     }
     //Checks if the player won on the first turn
     else if(current_scores.player_natural_blackjack === true && (current_scores.player_score > current_scores.dealer_score)){
-        document.getElementById("game_start_button").disabled = false;
-        document.getElementById("game_start_button").style.visibility = "visible";
+        game_start_button.disabled = false;
+        game_start_button.style.visibility = "visible";
         console.log("Player Score: " + current_scores.player_score + " Dealer Score: " + current_scores.dealer_score);
         console.log("Player Wins! Natural Blackjack!");
         game_is_over = true;
@@ -277,8 +286,8 @@ function checkDealerEndCondition(){
     }
     //Checks if the dealer has busted
     else if(current_scores.dealer_score > 21){
-        document.getElementById("game_start_button").disabled = false;
-        document.getElementById("game_start_button").style.visibility = "visible";
+        game_start_button.disabled = false;
+        game_start_button.style.visibility = "visible";
         console.log("Player Score: " + current_scores.player_score + " Dealer Score: " + current_scores.dealer_score);
         console.log("Player wins, Dealer BUSTED");
         game_is_over = true;
@@ -295,8 +304,8 @@ function checkDealerEndCondition(){
     else if(current_scores.dealer_score >= 17 && game_is_over === false){
         //Condition: Player Wins
         if(current_scores.player_score > current_scores.dealer_score){
-            document.getElementById("game_start_button").disabled = false;
-            document.getElementById("game_start_button").style.visibility = "visible";
+            game_start_button.disabled = false;
+            game_start_button.style.visibility = "visible";
             console.log("Player Score: " + current_scores.player_score + " Dealer Score: " + current_scores.dealer_score);
             console.log("Player wins");
             game_is_over = true;
@@ -307,8 +316,8 @@ function checkDealerEndCondition(){
         }
         //Condition: Dealer Wins
         else if(current_scores.player_score < current_scores.dealer_score){
-            document.getElementById("game_start_button").disabled = false;
-            document.getElementById("game_start_button").style.visibility = "visible";
+            game_start_button.disabled = false;
+            game_start_button.style.visibility = "visible";
             console.log("Player Score: " + current_scores.player_score + " Dealer Score: " + current_scores.dealer_score);
             console.log("Dealer wins");
             game_is_over = true;
@@ -319,8 +328,8 @@ function checkDealerEndCondition(){
         }
         //Condition: It's a tie
         else if(current_scores.player_score === current_scores.dealer_score){
-            document.getElementById("game_start_button").disabled = false;
-            document.getElementById("game_start_button").style.visibility = "visible";
+            game_start_button.disabled = false;
+            game_start_button.style.visibility = "visible";
             console.log("Player Score: " + current_scores.player_score + " Dealer Score: " + current_scores.dealer_score);
             console.log("It's a tie");
             game_is_over = true;
@@ -388,8 +397,8 @@ function dealDealerCard(){
 
 function playerBusted(){
 
-    document.getElementById("player_score").textContent = "Total Card Value: " + current_scores.player_score + " BUSTED!";
-    document.getElementById("player_score").style.color = "rgb(255,0,0)";
+    player_score_text.textContent = "Total Card Value: " + current_scores.player_score + " BUSTED!";
+    player_score_text.style.color = "rgb(255,0,0)";
 
     document.getElementById("game_start_button").disabled = false;
     document.getElementById("game_start_button").style.visibility = "visible";
@@ -424,8 +433,8 @@ function playerStand(){
     //Situation where player wins
     else if(current_scores.player_score > current_scores.dealer_score && current_scores.player_natural_blackjack === false){
 
-        document.getElementById("game_start_button").disabled = false;
-        document.getElementById("game_start_button").style.visibility = "visible";
+        game_start_button.disabled = false;
+        game_start_button.style.visibility = "visible";
         console.log("Player Score: " + current_scores.player_score + " Dealer Score: " + current_scores.dealer_score);
         console.log("Player wins");
         game_is_over = true;
@@ -435,8 +444,8 @@ function playerStand(){
     }
     //Situation where dealer wins
     else if(current_scores.player_score < current_scores.dealer_score){
-        document.getElementById("game_start_button").disabled = false;
-        document.getElementById("game_start_button").style.visibility = "visible";
+        game_start_button.disabled = false;
+        game_start_button.style.visibility = "visible";
         console.log("Player Score: " + current_scores.player_score + " Dealer Score: " + current_scores.dealer_score);
         console.log("Dealer wins");
         game_is_over = true;
@@ -445,8 +454,8 @@ function playerStand(){
         deleteCardList();
     }
     else if(current_scores.player_score === current_scores.dealer_score){
-        document.getElementById("game_start_button").disabled = false;
-        document.getElementById("game_start_button").style.visibility = "visible";
+        game_start_button.disabled = false;
+        game_start_button.style.visibility = "visible";
         console.log("Player Score: " + current_scores.player_score + " Dealer Score: " + current_scores.dealer_score);
         console.log("It's a tie");
         game_is_over = true;
@@ -485,8 +494,8 @@ function dealPlayerCard(){
         current_scores.player_score = current_scores.player_score + 10;
         current_scores.player_ace_bonus = true;
     }
-    document.getElementById("player_score").textContent = "Total Card Value: " + current_scores.player_score;
-    document.getElementById("player_score").style.color = "rgb(0,0,255)";
+    player_score_text.textContent = "Total Card Value: " + current_scores.player_score;
+    player_score_text.style.color = "rgb(0,0,255)";
     drawCanvas();
 
     //Check if the player has gone bust
@@ -496,8 +505,8 @@ function dealPlayerCard(){
             current_scores.player_score = current_scores.player_score - 10;
             current_scores.player_bonus_disabled = true;
 
-            document.getElementById("player_score").textContent = "Total Card Value: " + current_scores.player_score;
-            document.getElementById("player_score").style.color = "rgb(0,0,255)";
+            player_score_text.textContent = "Total Card Value: " + current_scores.player_score;
+            player_score_text.style.color = "rgb(0,0,255)";
             drawCanvas();
         }
 
