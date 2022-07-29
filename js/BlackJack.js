@@ -58,6 +58,14 @@ var player_x_offset = Math.round(canvas_width/100); //a very tiny offset for the
 var dealer_x_offset = Math.round(canvas_width/2);
 var hands_y_offset = Math.round(canvas_height/10);
 var image_map = new Map();
+var hit_button_path = "imgs/hit_me_button.png";
+var stand_button_path = "imgs/stand_button.png";
+var hit_button_x_offset = Math.round(2 * (canvas_width/6));
+var button_width = Math.round(canvas_width/10);
+var stand_button_x_offset = Math.round(3 * (canvas_width/6));
+var button_y_offset = Math.round(16 * (canvas_height/20));
+var button_height = Math.round(button_width * 0.7);
+
 
 //global variables related to DOM specifically
 var player_score_text = document.getElementById("player_score"); //a reference to the player score HTML element
@@ -70,6 +78,15 @@ var black_color = "rgb(0,0,0)";
 var red_color = "rgb(255,0,0)";
 var blue_color = "rgb(0,0,255)";
 var yellow_color = "rgb(255,225,0)";
+var salmon_color = "rgb(250,128,114)";
+
+//global variables related to font
+var small_score_text = "12pt serif";
+var medium_score_text = "16pt serif";
+var large_score_text = "20pt serif";
+var small_end_text = "20pt fantasy";
+var large_end_text = "32pt fantasy";
+
 
 
 function preloadImageMap(event){
@@ -88,10 +105,86 @@ function preloadImageMap(event){
         image_map.set("imgs/card_back.png", card_back_image);
     }
     card_back_image.src = "imgs/card_back.png";
+
+    //Add buttons to the image_map
+    let hit_button_image = new Image();
+    hit_button_image.onload = function(){
+        image_map.set(hit_button_path, hit_button_image);
+    }
+    hit_button_image.src = hit_button_path;
+
+    let stand_button_image = new Image();
+    stand_button_image.onload = function(){
+        image_map.set(stand_button_path, stand_button_image);
+    }
+    stand_button_image.src = stand_button_path;
+
 }
 
 //Pre-load images into the image_map, triggers when the DOM is loaded
 document.addEventListener('DOMContentLoaded', preloadImageMap);
+
+//Set up an event listener for the canvas
+canvas.addEventListener('pointerdown', e => {
+
+    let canvas_rect = canvas.getBoundingClientRect();
+    let pointer_x_coord = e.clientX - canvas_rect.left;
+    let pointer_y_coord = e.clientY - canvas_rect.top;
+
+    //Are Buttons active?
+    if(game_is_over === false && player_is_standing === false){
+
+        //Hit Me Button clicked on
+        if(((pointer_x_coord >= hit_button_x_offset) && pointer_x_coord <= (hit_button_x_offset + button_width))
+            && ((pointer_y_coord >= button_y_offset) && pointer_y_coord <= (button_y_offset + button_height))){
+        
+            switch (e.pointerType){
+
+                //pointer type was a mouse
+                case 'mouse':
+                    dealPlayerCard();
+                    break;
+
+                case "touch":
+                    dealPlayerCard();
+                    break;
+
+                case "pen":
+                    dealPlayerCard();
+                    break;
+
+                default:
+                    console.log("Your device is not supported for this game.");
+
+            }
+        }
+
+        //Stand Button clicked on
+        else if(((pointer_x_coord >= stand_button_x_offset) && pointer_x_coord <= (stand_button_x_offset + button_width))
+            && ((pointer_y_coord >= button_y_offset) && pointer_y_coord <= (button_y_offset + button_height))){
+        
+            switch (e.pointerType){
+
+                //pointer type was a mouse
+                case 'mouse':
+                    playerStand();
+                    break;
+
+                case "touch":
+                    playerStand();
+                    break;
+
+                case "pen":
+                    playerStand();
+                    break;
+
+                default:
+                    console.log("Your device is not supported for this game.");
+
+            }
+        }
+    }
+})
 
 /* Function: drawCanvas()
  * Description: draws a fresh canvas
@@ -100,6 +193,7 @@ document.addEventListener('DOMContentLoaded', preloadImageMap);
  */
 function drawCanvas(){
     eraseCanvas();
+    //Set up the size variables for drawing the canvas and its elements
     canvas_width = window.innerWidth - Math.round((window.innerWidth/100) * 5);
     canvas_height = Math.round(canvas_width/2.2);
     canvas.width = canvas_width;
@@ -111,13 +205,29 @@ function drawCanvas(){
     player_x_offset = Math.round(canvas_width/100);
     dealer_x_offset = Math.round(canvas_width/2);
     hands_y_offset = Math.round(canvas_height/10);
+    hit_button_x_offset = Math.round(2 * (canvas_width/6));
+    button_width = Math.round(canvas_width/10);
+    stand_button_x_offset = Math.round(3 * (canvas_width/6));
+    button_y_offset = Math.round(16 * (canvas_height/20));
+    button_height = Math.round(button_width * 0.7);
+
+
+    //Draw the whole canvas
     ctx.fillStyle = table_color; //green table fillStyle
     ctx.fillRect(0,0, canvas_width, canvas_height);
 
     //draw Scores
-    ctx.font = "16pt serif";
+    ctx.font = small_score_text;
+    if(canvas_width >= 1280){
+        ctx.font = large_score_text;
+    }
+    else if(canvas_width > 800){
+        ctx.font = medium_score_text;
+    }
+
     ctx.fillStyle = black_color; //Black text fillStyle
     ctx.fillText("Player Card Value: " + current_scores.player_score, Math.round(canvas_width/25), Math.round(canvas_height/20));
+
     if(game_is_over === false){
         if(current_dealer_hand.length > 0){
             ctx.fillText("Known Dealer Card Value: " + current_dealer_hand[0].rank, dealer_x_offset, Math.round(canvas_height/20));
@@ -156,20 +266,44 @@ function drawCanvas(){
         } 
     }
 
+    //Draw Net Wins/Overall Score 
+    ctx.font = small_score_text;
+    if(canvas_width >= 1280){
+        ctx.font = large_score_text;
+    }
+    else if(canvas_width > 800){
+        ctx.font = medium_score_text;
+    }
+
+    ctx.fillStyle = black_color;
+    ctx.fillText("Net Wins: " + net_games_won, (3 * Math.round(canvas_width/100)), (19 * Math.round(canvas_height/20)));
+
+
+    //Draw Buttons
+    if(game_is_over == false && player_is_standing == false){
+        //draw Hit Me! Button
+        ctx.drawImage(image_map.get(hit_button_path), dx = hit_button_x_offset, dy = button_y_offset, width = button_width, height = button_height);
+        //draw Stand Button
+        ctx.drawImage(image_map.get(stand_button_path), dx = stand_button_x_offset, dy = button_y_offset, width = button_width, height = button_height);
+    }
+
     //Game Over Messages
     if(game_is_over === true){
-        ctx.font = "30px fantasy"
+        ctx.font = small_end_text;
+        if(canvas_width > 800){
+            ctx.font = large_end_text;
+        }
         if(dealer_won === true){
-            ctx.fillStyle = red_color; //Red text
-            ctx.fillText("The Dealer Wins!", Math.round((canvas_width/2) - (canvas_width/20)), Math.round(canvas_height/2));
+            ctx.fillStyle = salmon_color; //Salmon text
+            ctx.fillText("The Dealer Wins!", Math.round((canvas_width/2) - (canvas_width/10)), Math.round(canvas_height/2));
         }
         else if(player_won === true){
             ctx.fillStyle = blue_color; //Blue text
-            ctx.fillText("You Win!", Math.round((canvas_width/2) - (canvas_width/20)), Math.round(canvas_height/2));
+            ctx.fillText("You Win!", Math.round((canvas_width/2) - (canvas_width/10)), Math.round(canvas_height/2));
         }
         else if(game_was_tie === true){
             ctx.fillStyle = yellow_color; //Yellow text
-            ctx.fillText("It's a tie!", Math.round((canvas_width/2) - (canvas_width/20)), Math.round(canvas_height/2));
+            ctx.fillText("It's a tie!", Math.round((canvas_width/2) - (canvas_width/10)), Math.round(canvas_height/2));
         }
     }
 
@@ -225,7 +359,7 @@ function createDeck(){
 
     for(let suit_count = 0; suit_count < 4; suit_count++){
         for(let rank_count = 0; rank_count < 13; rank_count++){
-            var current_card = new Card(rank_array[rank_count], suit_array[suit_count], name_array[rank_count]);
+            let current_card = new Card(rank_array[rank_count], suit_array[suit_count], name_array[rank_count]);
             blackjack_deck.push(current_card);
             //console.log(current_card.title);
         }
@@ -256,12 +390,6 @@ function createDeck(){
  */
 function checkDealerEndCondition(){
 
-    //Slightly redundant, yet it is possible that the buttons need to be disabled if the dealer got a natural blackjack
-    document.getElementById("hit_me_button").disabled = true;
-    document.getElementById("hit_me_button").style.visibility = "hidden";
-    document.getElementById("stand_button").disabled = true;
-    document.getElementById("stand_button").style.visibility = "hidden";
-
     //Checks if it's a tie on the first turn
     if(current_scores.player_natural_blackjack === true && (current_scores.player_score === current_scores.dealer_score)){
         game_start_button.disabled = false;
@@ -281,6 +409,7 @@ function checkDealerEndCondition(){
         console.log("Player Wins! Natural Blackjack!");
         game_is_over = true;
         player_won = true;
+        net_games_won++;
         drawCanvas();
         deleteCardList();
     }
@@ -292,6 +421,7 @@ function checkDealerEndCondition(){
         console.log("Player wins, Dealer BUSTED");
         game_is_over = true;
         player_won = true;
+        net_games_won++;
         drawCanvas();
         deleteCardList();
     }
@@ -310,6 +440,7 @@ function checkDealerEndCondition(){
             console.log("Player wins");
             game_is_over = true;
             player_won = true;
+            net_games_won++;
             drawCanvas();
             deleteCardList();
 
@@ -322,6 +453,7 @@ function checkDealerEndCondition(){
             console.log("Dealer wins");
             game_is_over = true;
             dealer_won = true;
+            net_games_won--;
             drawCanvas();
             deleteCardList();
 
@@ -400,16 +532,12 @@ function playerBusted(){
     player_score_text.textContent = "Total Card Value: " + current_scores.player_score + " BUSTED!";
     player_score_text.style.color = "rgb(255,0,0)";
 
-    document.getElementById("game_start_button").disabled = false;
-    document.getElementById("game_start_button").style.visibility = "visible";
+    game_start_button.disabled = false;
+    game_start_button.style.visibility = "visible";
 
-    document.getElementById("hit_me_button").disabled = true;
-    document.getElementById("hit_me_button").style.visibility = "hidden";
-
-    document.getElementById("stand_button").disabled = true;
-    document.getElementById("stand_button").style.visibility = "hidden";
     game_is_over = true;
     dealer_won = true;
+    net_games_won--;
     drawCanvas();
     deleteCardList();
 }
@@ -421,10 +549,6 @@ function playerBusted(){
  */
 
 function playerStand(){
-    document.getElementById("hit_me_button").disabled = true;
-    document.getElementById("hit_me_button").style.visibility = "hidden";
-    document.getElementById("stand_button").disabled = true;
-    document.getElementById("stand_button").style.visibility = "hidden";
     player_is_standing = true;
 
     if(current_scores.dealer_score < 17 && current_scores.player_natural_blackjack === false){
@@ -439,6 +563,7 @@ function playerStand(){
         console.log("Player wins");
         game_is_over = true;
         player_won = true;
+        net_games_won++;
         drawCanvas();
         deleteCardList();
     }
@@ -450,6 +575,7 @@ function playerStand(){
         console.log("Dealer wins");
         game_is_over = true;
         dealer_won = true;
+        net_games_won--;
         drawCanvas();
         deleteCardList();
     }
@@ -543,15 +669,10 @@ function startGame(){
     player_won = false; //ditto
     dealer_won = false; //ditto
     game_was_tie = false; //ditto
-    document.getElementById("game_start_button").disabled = true;
-    document.getElementById("game_start_button").style.visibility = "hidden";
-    document.getElementById("hit_me_button").disabled = false;
-    document.getElementById("hit_me_button").style.visibility = "visible";
-    document.getElementById("stand_button").disabled = false;
-    document.getElementById("stand_button").style.visibility = "visible";
+    game_start_button.disabled = true;
+    game_start_button.style.visibility = "hidden";
 
     drawCanvas();
-
 
     //deals two cards to start off the game
     dealPlayerCard();
