@@ -81,10 +81,10 @@ var yellow_color = "rgb(255,225,0)";
 var salmon_color = "rgb(250,128,114)";
 
 //global variables related to font
-var small_score_text = "12pt serif";
+var small_score_text = "11pt serif";
 var medium_score_text = "16pt serif";
 var large_score_text = "20pt serif";
-var small_end_text = "20pt fantasy";
+var small_end_text = "16pt fantasy";
 var large_end_text = "32pt fantasy";
 
 
@@ -211,6 +211,14 @@ function drawCanvas(){
     button_y_offset = Math.round(16 * (canvas_height/20));
     button_height = Math.round(button_width * 0.7);
 
+    //Adjust button dimensions and placement to be mobile friendly if necessary
+    if(canvas_width < 800){
+        button_width = Math.round(1.5 * button_width);
+        button_height = Math.round(button_width * 0.7);
+        hit_button_x_offset = Math.round(2 * (canvas_width/6));
+        stand_button_x_offset = Math.round(4 * (canvas_width/6));
+        button_y_offset = Math.round(14 * (canvas_height/20));
+    }
 
     //Draw the whole canvas
     ctx.fillStyle = table_color; //green table fillStyle
@@ -226,18 +234,22 @@ function drawCanvas(){
     }
 
     ctx.fillStyle = black_color; //Black text fillStyle
-    ctx.fillText("Player Card Value: " + current_scores.player_score, Math.round(canvas_width/25), Math.round(canvas_height/20));
+    let score_text_y_offset = Math.round(canvas_height/15);
+    if(canvas_width > 800){
+        score_text_y_offset = Math.round(canvas_height/20);
+    }
+    ctx.fillText("Player Card Value: " + current_scores.player_score, Math.round(canvas_width/25), score_text_y_offset);
 
     if(game_is_over === false){
         if(current_dealer_hand.length > 0){
-            ctx.fillText("Known Dealer Card Value: " + current_dealer_hand[0].rank, dealer_x_offset, Math.round(canvas_height/20));
+            ctx.fillText("Known Dealer Card Value: " + current_dealer_hand[0].rank, dealer_x_offset, score_text_y_offset);
         }
         else{
-            ctx.fillText("Known Dealer Card Value: ", dealer_x_offset, Math.round(canvas_height/20));
+            ctx.fillText("Known Dealer Card Value: ", dealer_x_offset, score_text_y_offset);
         }
     }
     else{
-        ctx.fillText("Dealer Card Value: " + current_scores.dealer_score, dealer_x_offset, Math.round(canvas_height/20));
+        ctx.fillText("Dealer Card Value: " + current_scores.dealer_score, dealer_x_offset, score_text_y_offset);
     }
 
 
@@ -294,7 +306,7 @@ function drawCanvas(){
             ctx.font = large_end_text;
         }
         if(dealer_won === true){
-            ctx.fillStyle = salmon_color; //Salmon text
+            ctx.fillStyle = blue_color; //Blue text, other colors just weren't working as well
             ctx.fillText("The Dealer Wins!", Math.round((canvas_width/2) - (canvas_width/10)), Math.round(canvas_height/2));
         }
         else if(player_won === true){
